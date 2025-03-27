@@ -1,0 +1,14 @@
+services:
+  moderation:
+    build:
+      context: .
+      target: moderation
+    env_file: ./.env
+    restart: always
+    ports:
+      - '${MODERATION_PORT}:8000'
+    networks:
+      - unaplauso-network
+
+networks:
+  unaplauso-network:

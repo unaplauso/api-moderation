@@ -1,0 +1,15 @@
+[project]
+name = "api-moderation"
+version = "0.1.0"
+description = "Un Aplauso's moderation service"
+readme = "README.md"
+authors = [
+    { name = "Luka Cerrutti", email = "lukacerrutti2002@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.11",
+    "opennsfw2>=0.14.0",
+    "python-dotenv>=1.0.1",
+    "tensorflow>=2.19.0",
+]

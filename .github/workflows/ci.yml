@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'app/**'
+      - 'models/**'
+      - 'Dockerfile'
+      - 'uv.lock'
+
+env:
+  SSH_HOST: ${{ contains(github.ref, 'main') && secrets.SSH_PRODUCTION_HOST || secrets.SSH_TESTING_HOST }}
+  DOCKER_TAG: ${{ contains(github.ref, 'main') && 'stable' || 'latest' }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - uses: docker/setup-buildx-action@master
+
+      - uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - uses: docker/build-push-action@master
+        with:
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-moderation:${{ env.DOCKER_TAG }}
+
+      - uses: appleboy/ssh-action@master
+        with:
+          script: deploy
+          command_timeout: '2m'
+          username: ec2-user
+          host: ${{ env.SSH_HOST }}
+          key: ${{ secrets.SSH_ROOT_KEY }}
