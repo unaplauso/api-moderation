@@ -13,7 +13,8 @@ on:
 
 env:
   SSH_HOST: ${{ contains(github.ref, 'main') && secrets.SSH_PRODUCTION_HOST || secrets.SSH_TESTING_HOST }}
-  DOCKER_TAG: ${{ contains(github.ref, 'main') && 'stable' || 'latest' }}
+  IMAGE_TAG: ${{ contains(github.ref, 'main') && 'stable' || 'latest' }}
+  REGISTRY_HOST: 908027417939.dkr.ecr.sa-east-1.amazonaws.com 
 
 jobs:
   ci:
@@ -25,13 +26,14 @@ jobs:
 
       - uses: docker/login-action@master
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          registry: ${{ env.REGISTRY_HOST }}
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - uses: docker/build-push-action@master
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-moderation:${{ env.DOCKER_TAG }}
+          tags: ${{ env.REGISTRY_HOST }}/api-moderation:${{ env.IMAGE_TAG }}
 
       - uses: appleboy/ssh-action@master
         with:
