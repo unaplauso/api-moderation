@@ -33,7 +33,7 @@ jobs:
       - uses: docker/build-push-action@master
         with:
           push: true
-          tags: ${{ env.REGISTRY_HOST }}/api-moderation:${{ env.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY_HOST }}/unaplauso/api-moderation:${{ env.IMAGE_TAG }}
 
       - uses: appleboy/ssh-action@master
         with:
